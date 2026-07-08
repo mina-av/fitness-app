@@ -10,6 +10,7 @@ import {
   createTemplate as createTemplateRepo,
   removeTemplateExercise as removeTemplateExerciseRepo,
   reorderTemplateExercises as reorderTemplateExercisesRepo,
+  restoreTemplate as restoreTemplateRepo,
   templateByIdQuery,
   templateExercisesQuery,
   templatesQuery,
@@ -60,6 +61,7 @@ export function useTemplateActions() {
     [],
   );
   const archiveTemplate = useCallback((id: string) => archiveTemplateRepo(db, id), []);
+  const restoreTemplate = useCallback((id: string) => restoreTemplateRepo(db, id), []);
   const addTemplateExercise = useCallback(
     (input: TemplateExerciseInput) => addTemplateExerciseRepo(db, input),
     [],
@@ -77,6 +79,7 @@ export function useTemplateActions() {
     createTemplate,
     updateTemplate,
     archiveTemplate,
+    restoreTemplate,
     addTemplateExercise,
     removeTemplateExercise,
     reorderTemplateExercises,

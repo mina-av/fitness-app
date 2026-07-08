@@ -1,15 +1,16 @@
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
-import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
+import { DarkTheme, Stack, ThemeProvider } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, useColorScheme, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { db } from '@/db/client';
 import { seedDatabase } from '@/features/exercises/seed/seed';
+import { COLORS } from '@/lib/constants';
 
 import migrations from '../drizzle/migrations';
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
   const { success: migrationsReady, error: migrationError } = useMigrations(db, migrations);
   const [seedError, setSeedError] = useState<Error | null>(null);
   const [seedDone, setSeedDone] = useState(false);
@@ -36,13 +37,14 @@ export default function RootLayout() {
   if (!migrationsReady || !seedDone) {
     return (
       <View style={styles.centered}>
-        <Text>Datenbank wird vorbereitet …</Text>
+        <Text style={styles.loadingText}>Datenbank wird vorbereitet …</Text>
       </View>
     );
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={DarkTheme}>
+      <StatusBar style="light" />
       <Stack screenOptions={{ headerShown: false }} />
     </ThemeProvider>
   );
@@ -55,15 +57,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 8,
     paddingHorizontal: 24,
+    backgroundColor: COLORS.background,
   },
   errorTitle: {
     fontSize: 17,
     fontWeight: '600',
+    color: COLORS.textPrimary,
     textAlign: 'center',
   },
   errorMessage: {
     fontSize: 14,
-    color: '#666',
+    color: COLORS.textSecondary,
     textAlign: 'center',
+  },
+  loadingText: {
+    color: COLORS.textSecondary,
   },
 });

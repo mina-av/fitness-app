@@ -90,6 +90,14 @@ export async function archiveExercise(db: AppDatabase, id: string): Promise<void
   await db.update(exercises).set({ deletedAt: now, updatedAt: now }).where(eq(exercises.id, id));
 }
 
+/** Macht ein Archivieren rückgängig (Undo-Snackbar) — löscht `deletedAt` wieder. */
+export async function restoreExercise(db: AppDatabase, id: string): Promise<void> {
+  await db
+    .update(exercises)
+    .set({ deletedAt: null, updatedAt: new Date() })
+    .where(eq(exercises.id, id));
+}
+
 export async function countExercises(db: AppDatabase): Promise<number> {
   const rows = await db.select().from(exercises);
   return rows.length;

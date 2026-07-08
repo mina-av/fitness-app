@@ -34,7 +34,7 @@ export const exercises = sqliteTable(
     ...syncColumns,
     name: text('name').notNull(),
     // Kategorien: 'brust' | 'beine' | 'ruecken' | 'schultern' | 'arme' | 'core'
-    muscleGroup: text('muscle_group').notNull(),
+    muscleGroup: text('muscle_group').notNull().$type<MuscleGroup>(),
     // Sekundäre Muskelgruppen, JSON-Array als Text, z.B. '["trizeps","schultern"]'
     secondaryMuscles: text('secondary_muscles'),
     equipment: text('equipment'), // 'langhantel' | 'kurzhantel' | 'maschine' | 'koerpergewicht' | ...

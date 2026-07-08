@@ -75,6 +75,14 @@ export async function archiveTemplate(db: AppDatabase, id: string): Promise<void
     .where(eq(workoutTemplates.id, id));
 }
 
+/** Macht ein Archivieren rückgängig (Undo-Snackbar) — löscht `deletedAt` wieder. */
+export async function restoreTemplate(db: AppDatabase, id: string): Promise<void> {
+  await db
+    .update(workoutTemplates)
+    .set({ deletedAt: null, updatedAt: new Date() })
+    .where(eq(workoutTemplates.id, id));
+}
+
 export interface TemplateExerciseInput {
   templateId: string;
   exerciseId: string;

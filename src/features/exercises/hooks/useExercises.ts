@@ -9,6 +9,7 @@ import {
   createExercise as createExerciseRepo,
   exerciseByIdQuery,
   exercisesQuery,
+  restoreExercise as restoreExerciseRepo,
   updateExercise as updateExerciseRepo,
   type ExerciseFilters,
   type ExerciseInput,
@@ -41,6 +42,7 @@ export function useExerciseActions() {
     [],
   );
   const archiveExercise = useCallback((id: string) => archiveExerciseRepo(db, id), []);
+  const restoreExercise = useCallback((id: string) => restoreExerciseRepo(db, id), []);
 
-  return { createExercise, updateExercise, archiveExercise };
+  return { createExercise, updateExercise, archiveExercise, restoreExercise };
 }
