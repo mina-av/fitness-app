@@ -180,3 +180,4 @@ export type NewWorkout = typeof workouts.$inferInsert;
 export type WorkoutSet = typeof sets.$inferSelect;
 export type NewWorkoutSet = typeof sets.$inferInsert;
 export type SetType = 'normal' | 'dropset' | 'restpause';
+export type MuscleGroup = 'brust' | 'beine' | 'ruecken' | 'schultern' | 'arme' | 'core';
