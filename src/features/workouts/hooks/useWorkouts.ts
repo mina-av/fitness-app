@@ -7,6 +7,7 @@ import type { Workout, WorkoutSet } from '@/db/schema';
 import {
   activeWorkoutQuery,
   addSet as addSetRepo,
+  exerciseHistoryQuery,
   finishWorkout as finishWorkoutRepo,
   removeSet as removeSetRepo,
   setsForWorkoutQuery,
@@ -49,6 +50,19 @@ export function useWorkoutSets(workoutId: string | undefined) {
     [workoutId],
   );
   return { sets: (data ?? []) as WorkoutSet[], isLoading: updatedAt === undefined, error };
+}
+
+/** Rohe Verlaufszeilen (Satz + Workout) einer Übung — für "Letztes Mal"-Anzeigen beim Logging. */
+export function useExerciseWorkoutHistory(exerciseId: string | undefined) {
+  const { data, updatedAt, error } = useLiveQuery(
+    exerciseHistoryQuery(db, exerciseId ?? '__none__'),
+    [exerciseId],
+  );
+  return {
+    rows: (data ?? []) as { set: WorkoutSet; workout: Workout }[],
+    isLoading: updatedAt === undefined,
+    error,
+  };
 }
 
 export function useWorkoutActions() {

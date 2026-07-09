@@ -111,7 +111,7 @@ export const sets = sqliteTable(
     rir: integer('rir'), // Reps in Reserve, optional (0–5+)
     rpe: real('rpe'), // optional, 1–10 (Alternative zu RIR)
     // Satz-Typ: 'normal' | 'dropset' | 'restpause'
-    setType: text('set_type').notNull().default('normal'),
+    setType: text('set_type').notNull().default('normal').$type<SetType>(),
     // Sätze mit gleicher supersetGroup im selben Workout bilden einen Superset.
     // Wert ist eine frei vergebene Gruppen-ID (z.B. UUID oder "A"/"B").
     supersetGroup: text('superset_group'),
