@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import type { Exercise, SetType, WorkoutSet } from '@/db/schema';
 import { formatLastTimeSummary } from '@/lib/format';
 
+import { usePersonalRecordFeedback } from '../hooks/usePersonalRecordFeedback';
 import { useExerciseWorkoutHistory } from '../hooks/useWorkouts';
 import { ExerciseLogCard, type ExerciseTarget } from './ExerciseLogCard';
 import type { SetEntryValues } from './SetEntryForm';
@@ -13,9 +14,6 @@ export interface ExerciseLogCardContainerProps {
   currentSets: WorkoutSet[];
   target?: ExerciseTarget;
   supersetPartnerNames?: string[];
-  isNewPR: (
-    set: Pick<WorkoutSet, 'exerciseId' | 'reps' | 'weightKg' | 'isWarmup' | 'setType'>,
-  ) => boolean;
   onAddSet: (exerciseId: string, values: SetEntryValues, setType: SetType) => Promise<void>;
   onUpdateSet: (id: string, values: SetEntryValues) => Promise<void>;
   onRemoveSet: (id: string) => Promise<void>;
@@ -25,7 +23,9 @@ export interface ExerciseLogCardContainerProps {
 /**
  * Bindet ExerciseLogCard an Daten: lädt die Übungshistorie selbst (bleibt
  * innerhalb des workouts-Features — kein Import aus dem exercises-Feature),
- * filtert das laufende Workout heraus und berechnet die "Letztes Mal"-Zeile.
+ * filtert das laufende Workout heraus und berechnet die "Letztes Mal"-Zeile
+ * sowie das PR-Feedback (über die reine Funktion aus
+ * src/features/analysis/personalRecords.ts, siehe docs/decisions.md).
  */
 export function ExerciseLogCardContainer({
   exercise,
@@ -33,13 +33,15 @@ export function ExerciseLogCardContainer({
   currentSets,
   target,
   supersetPartnerNames,
-  isNewPR,
   onAddSet,
   onUpdateSet,
   onRemoveSet,
   onLinkSuperset,
 }: ExerciseLogCardContainerProps) {
   const { rows } = useExerciseWorkoutHistory(exercise.id);
+  const { checkForPR } = usePersonalRecordFeedback();
+
+  const historySets = useMemo(() => rows.map((row) => row.set), [rows]);
 
   const lastTimeSummary = useMemo(() => {
     const previousWorkoutSets = rows.filter(
@@ -60,7 +62,7 @@ export function ExerciseLogCardContainer({
       lastTimeSummary={lastTimeSummary}
       target={target}
       supersetPartnerNames={supersetPartnerNames}
-      isNewPR={isNewPR}
+      isNewPR={(set) => checkForPR(set, historySets).isNewPR}
       onAddSet={(values, setType) => onAddSet(exercise.id, values, setType)}
       onUpdateSet={onUpdateSet}
       onRemoveSet={onRemoveSet}

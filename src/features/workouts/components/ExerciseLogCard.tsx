@@ -21,9 +21,7 @@ export interface ExerciseLogCardProps {
   lastTimeSummary?: string;
   target?: ExerciseTarget;
   supersetPartnerNames?: string[];
-  isNewPR: (
-    set: Pick<WorkoutSet, 'exerciseId' | 'reps' | 'weightKg' | 'isWarmup' | 'setType'>,
-  ) => boolean;
+  isNewPR: (set: WorkoutSet) => boolean;
   onAddSet: (values: SetEntryValues, setType: SetType) => Promise<void>;
   onUpdateSet: (id: string, values: SetEntryValues) => Promise<void>;
   onRemoveSet: (id: string) => Promise<void>;

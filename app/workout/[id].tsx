@@ -11,7 +11,6 @@ import { useTemplateExercises } from '@/features/templates/hooks/useTemplates';
 import { AddWorkoutExerciseModal } from '@/features/workouts/components/AddWorkoutExerciseModal';
 import { ExerciseLogCardContainer } from '@/features/workouts/components/ExerciseLogCardContainer';
 import { SupersetLinkModal } from '@/features/workouts/components/SupersetLinkModal';
-import { usePersonalRecordFeedback } from '@/features/workouts/hooks/usePersonalRecordFeedback';
 import {
   useWorkout,
   useWorkoutActions,
@@ -32,7 +31,6 @@ export default function ActiveWorkoutScreen() {
   const { exercises: allExercises } = useExercises();
   const { templateExercises } = useTemplateExercises(workout?.templateId ?? undefined);
   const { finishWorkout, addSet, updateSet, removeSet } = useWorkoutActions();
-  const { checkForPR } = usePersonalRecordFeedback();
 
   const [addedExerciseIds, setAddedExerciseIds] = useState<string[]>([]);
   const [supersetGroups, setSupersetGroups] = useState<Record<string, string>>({});
@@ -73,8 +71,6 @@ export default function ActiveWorkoutScreen() {
     loggedExerciseIds.forEach(add);
     return ids;
   }, [templateExercises, initialParamIds, addedExerciseIds, loggedExerciseIds]);
-
-  const isNewPRFn = (set: Parameters<typeof checkForPR>[0]) => checkForPR(set).isNewPR;
 
   if (workoutLoading) {
     return <SafeAreaView style={styles.container} />;
@@ -200,7 +196,6 @@ export default function ActiveWorkoutScreen() {
                     : undefined
                 }
                 supersetPartnerNames={partnerNames}
-                isNewPR={isNewPRFn}
                 onAddSet={handleAddSet}
                 onUpdateSet={handleUpdateSet}
                 onRemoveSet={removeSet}
