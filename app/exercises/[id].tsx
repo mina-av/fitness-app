@@ -8,7 +8,9 @@ import { Card } from '@/components/Card';
 import { EmptyState } from '@/components/EmptyState';
 import type { MuscleGroup } from '@/db/schema';
 import { ExerciseFormModal } from '@/features/exercises/components/ExerciseFormModal';
+import { ExerciseProgressCharts } from '@/features/exercises/components/ExerciseProgressCharts';
 import { MediaPreview } from '@/features/exercises/components/MediaPreview';
+import { PersonalRecordsSection } from '@/features/exercises/components/PersonalRecordsSection';
 import { useExercise, useExerciseActions } from '@/features/exercises/hooks/useExercises';
 import { useExerciseHistory } from '@/features/exercises/hooks/useExerciseHistory';
 import { COLORS, SPACING } from '@/lib/constants';
@@ -82,6 +84,9 @@ export default function ExerciseDetailScreen() {
           <Text style={styles.description}>{exercise.description}</Text>
         ) : null}
 
+        <Text style={styles.sectionTitle}>Rekorde</Text>
+        <PersonalRecordsSection history={history} />
+
         <Text style={styles.sectionTitle}>Verlauf</Text>
         {history.length === 0 ? (
           <EmptyState
@@ -89,21 +94,24 @@ export default function ExerciseDetailScreen() {
             message="Sobald du diese Übung trainierst, erscheint hier der Verlauf."
           />
         ) : (
-          <View style={styles.historyList}>
-            {[...history].reverse().map((group) => (
-              <Card key={group.workout.id}>
-                <Text style={styles.historyDate}>
-                  {new Date(group.workout.date).toLocaleDateString('de-DE')}
-                </Text>
-                {group.sets.map((set) => (
-                  <Text key={set.id} style={styles.historySet}>
-                    {set.reps} × {set.weightKg} kg{set.rir !== null ? ` · RIR ${set.rir}` : ''}
-                    {set.isWarmup ? ' · Warmup' : ''}
+          <>
+            <ExerciseProgressCharts history={history} />
+            <View style={styles.historyList}>
+              {[...history].reverse().map((group) => (
+                <Card key={group.workout.id}>
+                  <Text style={styles.historyDate}>
+                    {new Date(group.workout.date).toLocaleDateString('de-DE')}
                   </Text>
-                ))}
-              </Card>
-            ))}
-          </View>
+                  {group.sets.map((set) => (
+                    <Text key={set.id} style={styles.historySet}>
+                      {set.reps} × {set.weightKg} kg{set.rir !== null ? ` · RIR ${set.rir}` : ''}
+                      {set.isWarmup ? ' · Warmup' : ''}
+                    </Text>
+                  ))}
+                </Card>
+              ))}
+            </View>
+          </>
         )}
 
         <Pressable accessibilityRole="button" onPress={handleArchive} style={styles.archiveButton}>

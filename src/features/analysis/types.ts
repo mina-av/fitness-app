@@ -39,6 +39,11 @@ export interface Recommendation {
   message: string;
 }
 
+export interface WeekVolumePoint {
+  weekOffset: number;
+  volume: number;
+}
+
 export interface WeeklyReport {
   weekOffset: number;
   totalVolume: number;
@@ -51,4 +56,8 @@ export interface WeeklyReport {
     previousVolume: number;
     volumeChangePercent: number | null;
   };
+  /** Sätze dieser Woche, die zum Zeitpunkt ihres Loggings ein PR waren. */
+  newPRs: AnalysisSet[];
+  /** Wochenvolumen der letzten 8 Wochen, endend bei `weekOffset` (chronologisch aufsteigend). */
+  last8WeeksVolume: WeekVolumePoint[];
 }

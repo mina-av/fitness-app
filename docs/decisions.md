@@ -3,6 +3,30 @@
 Kurz gehaltene Sammlung von Entscheidungen, die nicht offensichtlich aus dem
 Code hervorgehen. Neue Einträge oben anfügen.
 
+## Phase 5 — Progress-UI
+
+**Chart-Lib: `react-native-gifted-charts`** (statt `victory-native`).
+Gründe: reines JS/SVG (`react-native-svg`), keine zusätzliche native
+Skia-Abhängigkeit wie bei `victory-native` XL — passt besser zu einem Projekt,
+das mit `expo-sqlite` bereits eine heikle Web/Native-Bridge hat und keine
+weitere Komplexität beim Bundling/nativen Build riskieren soll. Deckt
+Linien- und Balkendiagramme (Gewicht/e1RM über Zeit, Wochenvolumen) ab, gut
+themebar für das dunkle Design. Zusätzlich `expo-linear-gradient` installiert
+— `react-native-gifted-charts` bricht beim Web-Export sonst mit "Gradient
+package was not found", auch ohne explizit angeforderte Farbverläufe.
+
+**Neue PRs pro Woche** werden in `useWeeklyAnalysis` berechnet, indem für
+jeden gültigen Satz (nicht Warmup, `setType='normal'`) der aktuellen Woche
+geprüft wird, ob er zum Zeitpunkt seines Loggings ein PR war — Vergleichs-
+Historie sind alle Sätze derselben Übung mit `createdAt` **strikt vor** dem
+Kandidaten. Das spiegelt exakt das Live-Feedback beim Logging (Phase 3/4)
+wider, nicht eine rückblickende Neubewertung mit dem heutigen Bestwert.
+
+**Kalender-Heatmap ist von der Wochen-Navigation entkoppelt** (eigener Hook
+`useHeatmapData`, eigener Monats-State im Screen) — die Heatmap zeigt einen
+ganzen Monat unabhängig davon, welche Woche gerade in der Kennzahlen-Sektion
+ausgewählt ist.
+
 ## Phase 4 — Analyse-Logik
 
 **`src/features/analysis/` wird wie `src/lib` behandelt (Ausnahme von der

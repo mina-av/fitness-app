@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '@/components/Button';
@@ -43,7 +43,7 @@ export default function DashboardScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
-      <View style={styles.content}>
+      <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>Fitness-Progress-App</Text>
 
         <Button
@@ -70,6 +70,11 @@ export default function DashboardScreen() {
           <Text style={styles.navSubtitle}>Übungsbibliothek durchsuchen und verwalten</Text>
         </Card>
 
+        <Card onPress={() => router.push('/analysis')} style={styles.navCard}>
+          <Text style={styles.navTitle}>Wochenanalyse</Text>
+          <Text style={styles.navSubtitle}>Volumen, PRs, Empfehlungen und Trainings-Heatmap</Text>
+        </Card>
+
         <Text style={styles.sectionTitle}>Letzte Workouts</Text>
         {recentWorkouts.length === 0 ? (
           <EmptyState title="Noch keine Workouts" message="Starte dein erstes Workout oben." />
@@ -80,7 +85,7 @@ export default function DashboardScreen() {
             ))}
           </View>
         )}
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -91,9 +96,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   content: {
-    flex: 1,
     paddingHorizontal: SPACING.lg,
     paddingTop: SPACING.xl,
+    paddingBottom: SPACING.xxl,
     gap: SPACING.md,
   },
   title: {

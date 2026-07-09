@@ -7,6 +7,7 @@ import { exercises, sets, templateExercises, workouts } from '@/db/schema';
 import { getWeekRange } from '@/lib/dates';
 
 import { buildHeatmapData, workoutsPerWeek } from '../consistency';
+import { isNewPR } from '../personalRecords';
 import { generateRecommendations } from '../rules';
 import { compareWeeks } from '../trends';
 import type {
@@ -98,6 +99,30 @@ export function useWeeklyAnalysis(weekOffset = 0): WeeklyReport {
       (s) => !s.isWarmup && s.createdAt >= start && s.createdAt <= end,
     );
 
+    // Neue PRs dieser Woche: pro Kandidat wird nur gegen Sätze VOR seinem
+    // eigenen Zeitpunkt geprüft — spiegelt das Live-Feedback beim Logging
+    // wider, nicht eine rückblickende Neubewertung (siehe docs/decisions.md).
+    const setsByExercise = new Map<string, AnalysisSet[]>();
+    for (const set of analysisSets) {
+      const list = setsByExercise.get(set.exerciseId);
+      if (list) list.push(set);
+      else setsByExercise.set(set.exerciseId, [set]);
+    }
+    const newPRs = currentWeekSets.filter((candidate) => {
+      const exerciseSets = setsByExercise.get(candidate.exerciseId) ?? [];
+      const priorSets = exerciseSets.filter((s) => s.createdAt < candidate.createdAt);
+      return isNewPR(candidate, priorSets);
+    });
+
+    const last8WeeksVolume = Array.from({ length: 8 }, (_, i) => {
+      const offset = weekOffset - (7 - i);
+      const range = getWeekRange(offset, reference);
+      const weekSets = analysisSets.filter(
+        (s) => !s.isWarmup && s.createdAt >= range.start && s.createdAt <= range.end,
+      );
+      return { weekOffset: offset, volume: totalVolume(weekSets) };
+    });
+
     return {
       weekOffset,
       totalVolume: totalVolume(currentWeekSets),
@@ -106,6 +131,8 @@ export function useWeeklyAnalysis(weekOffset = 0): WeeklyReport {
       recommendations,
       heatmap: buildHeatmapData(analysisSets),
       comparisonToPreviousWeek: compareWeeks(analysisSets, weekOffset, reference),
+      newPRs,
+      last8WeeksVolume,
     };
   }, [setRows, workoutRows, exerciseRows, templateExerciseRows, weekOffset]);
 }

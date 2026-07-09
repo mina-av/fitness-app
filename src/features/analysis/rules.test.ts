@@ -223,7 +223,9 @@ describe('rule 4 — undervolume warning', () => {
   it('ignores sets referencing an exercise that is not in the provided exercise list', () => {
     const sets = [makeSet({ id: 's1', exerciseId: 'unknown-exercise', createdAt: WEEK0 })];
     expect(() => generateRecommendations(baseInput({ sets }))).not.toThrow();
-    expect(generateRecommendations(baseInput({ sets })).find((r) => r.type === 'undervolume')).toBeUndefined();
+    expect(
+      generateRecommendations(baseInput({ sets })).find((r) => r.type === 'undervolume'),
+    ).toBeUndefined();
   });
 });
 
