@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useMemo } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '@/components/Button';
@@ -44,7 +44,17 @@ export default function DashboardScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Fitness-Progress-App</Text>
+        <View style={styles.titleRow}>
+          <Text style={styles.title}>Fitness-Progress-App</Text>
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => router.push('/settings')}
+            hitSlop={8}
+            style={styles.settingsButton}
+          >
+            <Text style={styles.settingsLabel}>Einstellungen</Text>
+          </Pressable>
+        </View>
 
         <Button
           label={activeWorkout ? 'Workout fortsetzen' : 'Workout starten'}
@@ -70,7 +80,7 @@ export default function DashboardScreen() {
           <Text style={styles.navSubtitle}>Übungsbibliothek durchsuchen und verwalten</Text>
         </Card>
 
-        <Card onPress={() => router.push('/analysis')} style={styles.navCard}>
+        <Card onPress={() => router.push('/analysis/index')} style={styles.navCard}>
           <Text style={styles.navTitle}>Wochenanalyse</Text>
           <Text style={styles.navSubtitle}>Volumen, PRs, Empfehlungen und Trainings-Heatmap</Text>
         </Card>
@@ -101,11 +111,25 @@ const styles = StyleSheet.create({
     paddingBottom: SPACING.xxl,
     gap: SPACING.md,
   },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: SPACING.sm,
+  },
   title: {
     fontSize: 22,
     fontWeight: '700',
     color: COLORS.textPrimary,
-    marginBottom: SPACING.sm,
+  },
+  settingsButton: {
+    minHeight: 44,
+    justifyContent: 'center',
+  },
+  settingsLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: COLORS.accent,
   },
   sectionTitle: {
     fontSize: 13,

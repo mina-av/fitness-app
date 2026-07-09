@@ -3,6 +3,43 @@
 Kurz gehaltene Sammlung von Entscheidungen, die nicht offensichtlich aus dem
 Code hervorgehen. Neue Einträge oben anfügen.
 
+## Phase 6 — Härtung & Release-Vorbereitung
+
+**Daten-Export als JSON** (`src/features/export/`): 1:1-Abbild der 5
+Kern-Tabellen (`exercises`, `workout_templates`, `template_exercises`,
+`workouts`, `sets`), nur nicht-gelöschte Zeilen, mit `version` +
+`exportedAt`-Feldern für einen späteren Import. Geteilt über
+`expo-sharing`/`expo-file-system` (neue `File`/`Paths`-API aus SDK 57, nicht
+die alte `FileSystem.writeAsStringAsync`-API). UI: neuer
+`app/settings.tsx`-Screen, vom Dashboard aus verlinkt. Import selbst ist
+nicht gebaut (nicht gefordert) — das Format ist aber bewusst so gehalten,
+dass ein künftiger Import die Zeilen direkt zurückschreiben kann.
+
+**Performance-Test statt manueller Prüfung**: `performance.test.ts` seedet
+1.200 Sätze über 100 Workouts in die Test-DB und misst `setsForWorkoutQuery`
+(Einzel-Workout, nutzt `idx_sets_workout`) sowie `exerciseHistoryQuery`
+(komplette Übungshistorie, nutzt `idx_sets_exercise`). Grenzwerte bewusst
+großzügig (1s / 2s) — sollen nur grobe Regressionen fangen, nicht als
+exaktes Performance-Budget dienen (CI-Timing ist variabel).
+
+**Fehlgeschlagene Migration**: bereits seit der Async-DB-Umstellung
+(`app/_layout.tsx`) abgedeckt — `RootLayout` zeigt bei einem Fehler in
+`initDb()` oder `useMigrations()` eine verständliche Fehlermeldung statt
+eines Absturzes. Kein weiterer Code nötig, hier nur gegengecheckt.
+
+**Kuriosität bei expo-router Typed Routes**: `app/analysis/index.tsx`
+bekommt vom Typed-Routes-Generator (aus unbekanntem Grund, anders als z.B.
+`app/exercises/index.tsx` → `/exercises`) NUR den Pfad `/analysis/index`
+zugewiesen, nicht den kanonischen `/analysis`. Zur Laufzeit funktionieren
+beide identisch (bestätigt), nur der generierte Typ akzeptiert `/analysis`
+nicht als Literal. Deshalb verwendet `app/index.tsx` bewusst
+`router.push('/analysis/index')` statt `'/analysis'`. Falls das in einer
+späteren expo-router-Version behoben wird, kann das wieder vereinfacht
+werden. Außerdem: `.expo/types/router.d.ts` wird NUR von `expo start`
+generiert/aktualisiert, nicht von `expo export` — bei "Route ist kein
+gültiger Href"-Typfehlern nach dem Anlegen einer neuen Route hilft ein
+kurzer `expo start`-Lauf (Datei wird beim Hochfahren geschrieben).
+
 ## Web-Plattform: expo-sqlite gilt als nicht unterstützt (Stand jetzt)
 
 Zwei voneinander unabhängige, im `expo-sqlite`-Web-Treiber selbst liegende
