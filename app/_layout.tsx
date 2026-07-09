@@ -4,13 +4,35 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { db } from '@/db/client';
+import { db, initDb } from '@/db/client';
 import { seedDatabase } from '@/features/exercises/seed/seed';
 import { COLORS } from '@/lib/constants';
 
 import migrations from '../drizzle/migrations';
 
-export default function RootLayout() {
+function ErrorScreen({ title, message }: { title: string; message: string }) {
+  return (
+    <View style={styles.centered}>
+      <Text style={styles.errorTitle}>{title}</Text>
+      <Text style={styles.errorMessage}>{message}</Text>
+    </View>
+  );
+}
+
+function LoadingScreen({ text }: { text: string }) {
+  return (
+    <View style={styles.centered}>
+      <Text style={styles.loadingText}>{text}</Text>
+    </View>
+  );
+}
+
+/**
+ * Läuft erst, sobald `db` initialisiert ist (siehe RootLayout) — damit ist
+ * garantiert, dass `useMigrations(db, ...)` nie mit einer nicht zugewiesenen
+ * `db` aufgerufen wird (Regeln für Hooks erlauben keinen bedingten Aufruf).
+ */
+function MigratedApp() {
   const { success: migrationsReady, error: migrationError } = useMigrations(db, migrations);
   const [seedError, setSeedError] = useState<Error | null>(null);
   const [seedDone, setSeedDone] = useState(false);
@@ -21,25 +43,24 @@ export default function RootLayout() {
     }
     seedDatabase(db)
       .then(() => setSeedDone(true))
-      .catch((error: Error) => setSeedError(error));
+      .catch((error: Error) => {
+        console.error('[DIAG] seedDatabase failed:', error, error.stack);
+        setSeedError(error);
+      });
   }, [migrationsReady]);
 
   const error = migrationError ?? seedError;
+  if (migrationError) {
+    console.error('[DIAG] migrationError:', migrationError, migrationError.stack);
+  }
   if (error) {
     return (
-      <View style={styles.centered}>
-        <Text style={styles.errorTitle}>Datenbank konnte nicht initialisiert werden</Text>
-        <Text style={styles.errorMessage}>{error.message}</Text>
-      </View>
+      <ErrorScreen title="Datenbank konnte nicht initialisiert werden" message={error.message} />
     );
   }
 
   if (!migrationsReady || !seedDone) {
-    return (
-      <View style={styles.centered}>
-        <Text style={styles.loadingText}>Datenbank wird vorbereitet …</Text>
-      </View>
-    );
+    return <LoadingScreen text="Datenbank wird vorbereitet …" />;
   }
 
   return (
@@ -48,6 +69,30 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false }} />
     </ThemeProvider>
   );
+}
+
+export default function RootLayout() {
+  const [dbReady, setDbReady] = useState(false);
+  const [dbError, setDbError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    initDb()
+      .then(() => setDbReady(true))
+      .catch((error: Error) => {
+        console.error('[DIAG] initDb failed:', error, error.stack);
+        setDbError(error);
+      });
+  }, []);
+
+  if (dbError) {
+    return <ErrorScreen title="Datenbank konnte nicht geöffnet werden" message={dbError.message} />;
+  }
+
+  if (!dbReady) {
+    return <LoadingScreen text="Datenbank wird geöffnet …" />;
+  }
+
+  return <MigratedApp />;
 }
 
 const styles = StyleSheet.create({

@@ -3,6 +3,32 @@
 Kurz gehaltene Sammlung von Entscheidungen, die nicht offensichtlich aus dem
 Code hervorgehen. Neue Einträge oben anfügen.
 
+## Web-Plattform: expo-sqlite gilt als nicht unterstützt (Stand jetzt)
+
+Zwei voneinander unabhängige, im `expo-sqlite`-Web-Treiber selbst liegende
+Bugs wurden bestätigt (nicht in unserem Code):
+
+1. **`openDatabaseSync` → "Sync operation timeout"**: die synchrone
+   Web-Bridge (SharedArrayBuffer/Atomics zu einem Worker) schlägt beim
+   allerersten Öffnen zuverlässig fehl. Behoben durch Umstieg auf
+   `openDatabaseAsync` (`src/db/client.ts`, `initDb()` + Render-Gating in
+   `app/_layout.tsx` — `db` wird per Definite-Assignment-Assertion `db!`
+   exportiert und erst nach `initDb()` zugewiesen, alle Repository-Hooks
+   bleiben unverändert).
+2. **JSON-Parse-Fehler bei Umlauten** ("Unterminated string in JSON..."):
+   selbst nach Fix #1 bricht das *erneute* Lesen von TEXT-Spalten mit
+   deutschen Umlauten (ü/ä/ö) bei einem Seiten-Reload — `expo-sqlite`
+   serialisiert Abfrageergebnisse intern per JSON zwischen Haupt-Thread und
+   Worker, und diese Serialisierung korrumpiert Mehrbyte-UTF-8-Zeichen.
+   Reproduzierbar in einem komplett frischen Browser-Kontext (kein Altdaten-
+   Problem). Nicht behoben — beträfe jede Texteingabe mit Umlauten, nicht
+   nur die Seed-Daten, und ist tief im Web-Treiber selbst verortet.
+
+**Konsequenz:** Web wird bis auf Weiteres nicht als Testplattform genutzt.
+Nativ (iOS/Android) ist von beidem nicht betroffen — dort läuft SQLite direkt
+über native Bindings, kein Worker-/JSON-Umweg. Getestet werden sollte über
+Expo Go (sobald SDK-kompatibel) oder einen EAS-Dev-Build.
+
 ## Phase 5 — Progress-UI
 
 **Chart-Lib: `react-native-gifted-charts`** (statt `victory-native`).
