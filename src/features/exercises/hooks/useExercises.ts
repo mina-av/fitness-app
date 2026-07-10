@@ -20,6 +20,7 @@ export function useExercises(filters: ExerciseFilters = {}) {
   const { data, error, updatedAt } = useLiveQuery(exercisesQuery(db, filters), [
     filters.search,
     filters.muscleGroup,
+    filters.equipmentContext,
   ]);
 
   return { exercises: (data ?? []) as Exercise[], isLoading: updatedAt === undefined, error };

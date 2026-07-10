@@ -282,4 +282,250 @@ export const exerciseSeedData: ExerciseSeedData[] = [
     equipment: 'kabelzug',
     description: 'Rotationsübung am Kabelzug für die schrägen Bauchmuskeln.',
   },
+
+  // --- Brust: zusätzlich, v.a. Zuhause-tauglich ---
+  {
+    name: 'Diamant-Liegestütze',
+    muscleGroup: 'brust',
+    secondaryMuscles: ['trizeps'],
+    equipment: 'koerpergewicht',
+    description: 'Enge Handposition, betont Trizeps und inneren Brustmuskel.',
+  },
+  {
+    name: 'Liegestütze mit erhöhten Füßen',
+    muscleGroup: 'brust',
+    secondaryMuscles: ['schultern', 'trizeps'],
+    equipment: 'koerpergewicht',
+    description: 'Füße erhöht (z.B. auf einer Bank) für mehr Fokus auf den oberen Brustmuskel.',
+  },
+  {
+    name: 'Archer-Liegestütze',
+    muscleGroup: 'brust',
+    secondaryMuscles: ['trizeps', 'core'],
+    equipment: 'koerpergewicht',
+    description: 'Einseitig betonte Liegestütz-Variante für mehr Intensität ohne Zusatzgewicht.',
+  },
+  {
+    name: 'Brustdrücken mit Widerstandsband',
+    muscleGroup: 'brust',
+    secondaryMuscles: ['trizeps', 'schultern'],
+    equipment: 'widerstandsband',
+    description:
+      'Band hinter dem Rücken fixieren, nach vorne drücken — gute Reise-/Zuhause-Alternative.',
+  },
+  {
+    name: 'Fliegende mit Widerstandsband',
+    muscleGroup: 'brust',
+    equipment: 'widerstandsband',
+    description: 'Isolationsübung für die Brust ohne Geräte, konstante Bandspannung.',
+  },
+  {
+    name: 'Pike-Liegestütz',
+    muscleGroup: 'brust',
+    secondaryMuscles: ['schultern', 'trizeps'],
+    equipment: 'koerpergewicht',
+    description: 'Hüfte hoch, Oberkörper nach unten — Übergangsübung Richtung Schulterdrücken.',
+  },
+
+  // --- Beine: zusätzlich, v.a. Zuhause-tauglich ---
+  {
+    name: 'Goblet Squat',
+    muscleGroup: 'beine',
+    secondaryMuscles: ['core'],
+    equipment: 'kurzhantel',
+    description: 'Kniebeuge mit einer Kurzhantel vor der Brust — einsteigerfreundlich.',
+  },
+  {
+    name: 'Bulgarian Split Squat',
+    muscleGroup: 'beine',
+    secondaryMuscles: ['core'],
+    equipment: 'kurzhantel',
+    description: 'Hinterer Fuß erhöht, einbeinige Kniebeuge — hart, aber sehr effektiv.',
+  },
+  {
+    name: 'Wandsitz',
+    muscleGroup: 'beine',
+    equipment: 'koerpergewicht',
+    description: 'Statisches Halten mit dem Rücken an der Wand, Oberschenkel parallel zum Boden.',
+  },
+  {
+    name: 'Kettlebell Swing',
+    muscleGroup: 'beine',
+    secondaryMuscles: ['ruecken', 'core'],
+    equipment: 'kettlebell',
+    description: 'Explosive Hüftstreckung — Ganzkörperübung mit Fokus auf hintere Kette.',
+  },
+  {
+    name: 'Step-ups',
+    muscleGroup: 'beine',
+    secondaryMuscles: ['core'],
+    equipment: 'koerpergewicht',
+    description: 'Auf eine Erhöhung (Bank, Stufe) steigen — einbeinige Kraft und Stabilität.',
+  },
+  {
+    name: 'Kniebeuge mit Widerstandsband',
+    muscleGroup: 'beine',
+    equipment: 'widerstandsband',
+    description: 'Band unter den Füßen oder um die Knie für zusätzlichen Widerstand.',
+  },
+  {
+    name: 'Airborne Lunges',
+    muscleGroup: 'beine',
+    secondaryMuscles: ['core'],
+    equipment: 'koerpergewicht',
+    description: 'Ausfallschritte ohne Zusatzgewicht, kontrollierte Ausführung.',
+  },
+  {
+    name: 'Hip Thrust',
+    muscleGroup: 'beine',
+    secondaryMuscles: ['ruecken', 'core'],
+    equipment: 'langhantel',
+    description: 'Schultern auf einer Bank, Langhantel über der Hüfte — Kernübung für das Gesäß.',
+  },
+  {
+    name: 'Glute Bridge',
+    muscleGroup: 'beine',
+    secondaryMuscles: ['core'],
+    equipment: 'koerpergewicht',
+    description: 'Zuhause-Variante des Hip Thrust ohne Gewicht, Rücken flach am Boden.',
+  },
+  {
+    name: 'Hip Thrust mit Kurzhantel',
+    muscleGroup: 'beine',
+    secondaryMuscles: ['ruecken', 'core'],
+    equipment: 'kurzhantel',
+    description: 'Hip Thrust mit einer Kurzhantel über der Hüfte statt der Langhantel.',
+  },
+
+  // --- Rücken: zusätzlich, v.a. Zuhause-tauglich ---
+  {
+    name: 'Rudern mit Widerstandsband',
+    muscleGroup: 'ruecken',
+    secondaryMuscles: ['arme'],
+    equipment: 'widerstandsband',
+    description: 'Band um die Füße oder an einem festen Punkt fixieren, zum Körper ziehen.',
+  },
+  {
+    name: 'Superman',
+    muscleGroup: 'ruecken',
+    secondaryMuscles: ['core'],
+    equipment: 'koerpergewicht',
+    description: 'Bauchlage, Arme und Beine gleichzeitig heben — für den unteren Rücken.',
+  },
+  {
+    name: 'Einarmiges Kurzhantelrudern',
+    muscleGroup: 'ruecken',
+    secondaryMuscles: ['arme'],
+    equipment: 'kurzhantel',
+    description: 'Abgestützt auf einer Bank, eine Seite isoliert trainieren.',
+  },
+  {
+    name: 'Kreuzheben mit Kurzhanteln',
+    muscleGroup: 'ruecken',
+    secondaryMuscles: ['beine', 'core'],
+    equipment: 'kurzhantel',
+    description: 'Zuhause-Alternative zum klassischen Kreuzheben mit der Langhantel.',
+  },
+  {
+    name: 'Kettlebell-Rudern vorgebeugt',
+    muscleGroup: 'ruecken',
+    secondaryMuscles: ['arme'],
+    equipment: 'kettlebell',
+    description: 'Vorgebeugte Position, Kettlebell zum Bauch ziehen.',
+  },
+
+  // --- Schultern: zusätzlich, v.a. Zuhause-tauglich ---
+  {
+    name: 'Schulterdrücken mit Widerstandsband',
+    muscleGroup: 'schultern',
+    secondaryMuscles: ['trizeps'],
+    equipment: 'widerstandsband',
+    description: 'Band unter den Füßen fixieren, nach oben drücken.',
+  },
+  {
+    name: 'Seitheben mit Widerstandsband',
+    muscleGroup: 'schultern',
+    equipment: 'widerstandsband',
+    description: 'Isolationsübung für die seitliche Schulter ohne Gewichte.',
+  },
+  {
+    name: 'Kettlebell Press',
+    muscleGroup: 'schultern',
+    secondaryMuscles: ['trizeps', 'core'],
+    equipment: 'kettlebell',
+    description: 'Einarmiges Überkopfdrücken, fordert zusätzlich die Rumpfstabilität.',
+  },
+  {
+    name: 'Pike Push-ups',
+    muscleGroup: 'schultern',
+    secondaryMuscles: ['trizeps'],
+    equipment: 'koerpergewicht',
+    description:
+      'Liegestütz-Variante mit hoher Hüfte — Körpergewichts-Alternative zum Schulterdrücken.',
+  },
+
+  // --- Arme: zusätzlich, v.a. Zuhause-tauglich ---
+  {
+    name: 'Trizeps-Dips am Stuhl',
+    muscleGroup: 'arme',
+    equipment: 'koerpergewicht',
+    description: 'Hände auf einer Stuhl-/Bankkante abstützen, Körper absenken und drücken.',
+  },
+  {
+    name: 'Bizepscurls mit Widerstandsband',
+    muscleGroup: 'arme',
+    equipment: 'widerstandsband',
+    description: 'Band unter die Füße stellen, klassische Curl-Bewegung.',
+  },
+  {
+    name: 'Trizeps-Kickback mit Widerstandsband',
+    muscleGroup: 'arme',
+    equipment: 'widerstandsband',
+    description: 'Vorgebeugte Position, Band nach hinten strecken.',
+  },
+  {
+    name: 'Kettlebell-Curls',
+    muscleGroup: 'arme',
+    equipment: 'kettlebell',
+    description: 'Bizeps-Übung mit dem dickeren Kettlebell-Griff für mehr Unterarm-Beteiligung.',
+  },
+
+  // --- Core: zusätzlich, v.a. Zuhause-tauglich ---
+  {
+    name: 'Mountain Climbers',
+    muscleGroup: 'core',
+    secondaryMuscles: ['beine'],
+    equipment: 'koerpergewicht',
+    description: 'Dynamische Übung im Liegestütz, Knie abwechselnd zur Brust ziehen.',
+  },
+  {
+    name: 'Bicycle Crunches',
+    muscleGroup: 'core',
+    equipment: 'koerpergewicht',
+    description: 'Diagonale Bewegung für gerade und schräge Bauchmuskeln.',
+  },
+  {
+    name: 'Side Plank',
+    muscleGroup: 'core',
+    equipment: 'koerpergewicht',
+    description: 'Seitliche Unterarmstütz-Position, trainiert die schrägen Bauchmuskeln.',
+  },
+  {
+    name: 'Hollow Body Hold',
+    muscleGroup: 'core',
+    equipment: 'koerpergewicht',
+    description: 'Statisches Halten in Bootsform — Ganzkörperspannung für den Rumpf.',
+  },
+  {
+    name: 'Beinheben liegend',
+    muscleGroup: 'core',
+    equipment: 'koerpergewicht',
+    description: 'Rückenlage, gestreckte Beine heben und senken — Fokus unterer Bauch.',
+  },
+  {
+    name: 'Pallof Press',
+    muscleGroup: 'core',
+    equipment: 'widerstandsband',
+    description: 'Anti-Rotations-Übung, Band seitlich fixieren und geradeaus drücken.',
+  },
 ];

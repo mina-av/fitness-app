@@ -7,22 +7,25 @@ import { EmptyState } from '@/components/EmptyState';
 import { Snackbar } from '@/components/Snackbar';
 import { TextField } from '@/components/TextField';
 import type { Exercise, MuscleGroup } from '@/db/schema';
+import { EquipmentContextFilterChips } from '@/features/exercises/components/EquipmentContextFilterChips';
 import { ExerciseFormModal } from '@/features/exercises/components/ExerciseFormModal';
 import { ExerciseListItem } from '@/features/exercises/components/ExerciseListItem';
 import { MuscleGroupFilterChips } from '@/features/exercises/components/MuscleGroupFilterChips';
 import { useExerciseActions, useExercises } from '@/features/exercises/hooks/useExercises';
-import { COLORS, SPACING } from '@/lib/constants';
+import { COLORS, SPACING, type EquipmentContext } from '@/lib/constants';
 
 export default function ExercisesScreen() {
   const [search, setSearch] = useState('');
   const [muscleGroup, setMuscleGroup] = useState<MuscleGroup | undefined>(undefined);
+  const [equipmentContext, setEquipmentContext] = useState<EquipmentContext | undefined>(undefined);
   const [formVisible, setFormVisible] = useState(false);
   const [archivedExercise, setArchivedExercise] = useState<Exercise | undefined>(undefined);
 
-  const { exercises, isLoading } = useExercises({ search, muscleGroup });
+  const { exercises, isLoading } = useExercises({ search, muscleGroup, equipmentContext });
   const { createExercise, archiveExercise, restoreExercise } = useExerciseActions();
 
-  const hasActiveFilters = search.trim().length > 0 || muscleGroup !== undefined;
+  const hasActiveFilters =
+    search.trim().length > 0 || muscleGroup !== undefined || equipmentContext !== undefined;
 
   const handleArchive = async (exercise: Exercise) => {
     await archiveExercise(exercise.id);
@@ -44,14 +47,18 @@ export default function ExercisesScreen() {
           autoCorrect={false}
         />
         <MuscleGroupFilterChips value={muscleGroup} onChange={setMuscleGroup} />
+        <EquipmentContextFilterChips value={equipmentContext} onChange={setEquipmentContext} />
       </View>
     ),
-    [search, muscleGroup],
+    [search, muscleGroup, equipmentContext],
   );
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <View style={styles.header}>
+        <Pressable accessibilityRole="button" onPress={() => router.back()} hitSlop={8}>
+          <Text style={styles.headerAction}>Zurück</Text>
+        </Pressable>
         <Text style={styles.title}>Übungen</Text>
         <Pressable
           accessibilityRole="button"
@@ -126,8 +133,16 @@ const styles = StyleSheet.create({
     paddingTop: SPACING.md,
     paddingBottom: SPACING.sm,
   },
+  headerAction: {
+    color: COLORS.accent,
+    fontSize: 15,
+    fontWeight: '600',
+    minHeight: 44,
+    minWidth: 44,
+    textAlignVertical: 'center',
+  },
   title: {
-    fontSize: 22,
+    fontSize: 17,
     fontWeight: '700',
     color: COLORS.textPrimary,
   },

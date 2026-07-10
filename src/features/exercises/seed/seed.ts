@@ -6,23 +6,35 @@ import { exerciseSeedData } from './exercises.seed';
 import { templateSeedData } from './templates.seed';
 
 /**
- * Befüllt eine leere DB mit der Standard-Übungsbibliothek + 2 Beispiel-Templates.
- * Läuft nur, wenn noch keine Übungen existieren (idempotent über App-Starts hinweg).
- * Legt `workout_templates`/`template_exercises` direkt an (kein Import aus dem
- * templates-Feature — Invariante: kein Feature importiert aus einem anderen Feature).
+ * Befüllt die Standard-Übungsbibliothek und legt (einmalig) 2 Beispiel-
+ * Trainingspläne an.
+ *
+ * Übungen werden inkrementell nach Namen abgeglichen (auch gegen bereits
+ * archivierte/soft-deleted Zeilen) — läuft bei jedem App-Start und ergänzt
+ * neu hinzugekommene Standardübungen auch bei Nutzer:innen, die die App
+ * schon länger installiert haben, ohne bestehende Einträge zu duplizieren.
+ *
+ * Templates laufen weiterhin nur "einmalig bei leerer Tabelle": anders als
+ * bei Übungen wäre ein nachträgliches Hinzufügen der Beispiel-Pläne in eine
+ * bereits von Nutzer:innen angepasste Planliste unerwartet/aufdringlich.
  */
 export async function seedDatabase(db: AppDatabase): Promise<void> {
-  const existing = await db.select().from(exercises).limit(1);
-  if (existing.length > 0) {
-    return;
-  }
+  const exerciseIdByName = await seedExercises(db);
+  await seedTemplatesIfEmpty(db, exerciseIdByName);
+}
 
-  const exerciseIdByName = new Map<string, string>();
+async function seedExercises(db: AppDatabase): Promise<Map<string, string>> {
+  // Inkl. soft-deleted: eine von Nutzer:innen bewusst archivierte Standard-
+  // übung soll beim nächsten App-Start nicht als "Duplikat" wieder auftauchen.
+  const existingRows = await db.select().from(exercises);
+  const idByName = new Map(existingRows.map((row) => [row.name, row.id]));
+
   const now = new Date();
-
   for (const data of exerciseSeedData) {
+    if (idByName.has(data.name)) continue;
+
     const id = createId();
-    exerciseIdByName.set(data.name, id);
+    idByName.set(data.name, id);
     await db.insert(exercises).values({
       id,
       createdAt: now,
@@ -38,6 +50,17 @@ export async function seedDatabase(db: AppDatabase): Promise<void> {
     });
   }
 
+  return idByName;
+}
+
+async function seedTemplatesIfEmpty(
+  db: AppDatabase,
+  exerciseIdByName: Map<string, string>,
+): Promise<void> {
+  const existingTemplates = await db.select().from(workoutTemplates).limit(1);
+  if (existingTemplates.length > 0) return;
+
+  const now = new Date();
   for (const [templateIndex, template] of templateSeedData.entries()) {
     const templateId = createId();
     await db.insert(workoutTemplates).values({

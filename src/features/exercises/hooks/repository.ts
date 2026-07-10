@@ -1,12 +1,14 @@
-import { and, eq, isNull, like, or } from 'drizzle-orm';
+import { and, eq, inArray, isNull, like, or } from 'drizzle-orm';
 
 import type { AppDatabase } from '@/db/client';
 import { exercises, type Exercise, type MuscleGroup } from '@/db/schema';
 import { createId } from '@/lib/ids';
+import { EQUIPMENT_CONTEXT_LISTS, type EquipmentContext } from '@/lib/constants';
 
 export interface ExerciseFilters {
   search?: string;
   muscleGroup?: MuscleGroup;
+  equipmentContext?: EquipmentContext;
 }
 
 /** Query-Builder (kein await) — direkt für `useLiveQuery` oder awaited für Tests/einmalige Reads nutzbar. */
@@ -14,6 +16,11 @@ export function exercisesQuery(db: AppDatabase, filters: ExerciseFilters = {}) {
   const conditions = [isNull(exercises.deletedAt)];
   if (filters.muscleGroup) {
     conditions.push(eq(exercises.muscleGroup, filters.muscleGroup));
+  }
+  if (filters.equipmentContext) {
+    conditions.push(
+      inArray(exercises.equipment, EQUIPMENT_CONTEXT_LISTS[filters.equipmentContext]),
+    );
   }
   if (filters.search && filters.search.trim().length > 0) {
     const term = `%${filters.search.trim()}%`;

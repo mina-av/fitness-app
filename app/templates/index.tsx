@@ -30,6 +30,9 @@ export default function TemplatesScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <View style={styles.header}>
+        <Pressable accessibilityRole="button" onPress={() => router.back()} hitSlop={8}>
+          <Text style={styles.headerAction}>Zurück</Text>
+        </Pressable>
         <Text style={styles.title}>Trainingspläne</Text>
         <Pressable
           accessibilityRole="button"
@@ -100,8 +103,16 @@ const styles = StyleSheet.create({
     paddingTop: SPACING.md,
     paddingBottom: SPACING.sm,
   },
+  headerAction: {
+    color: COLORS.accent,
+    fontSize: 15,
+    fontWeight: '600',
+    minHeight: 44,
+    minWidth: 44,
+    textAlignVertical: 'center',
+  },
   title: {
-    fontSize: 22,
+    fontSize: 17,
     fontWeight: '700',
     color: COLORS.textPrimary,
   },

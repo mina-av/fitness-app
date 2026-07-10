@@ -80,7 +80,7 @@ export default function DashboardScreen() {
           <Text style={styles.navSubtitle}>Übungsbibliothek durchsuchen und verwalten</Text>
         </Card>
 
-        <Card onPress={() => router.push('/analysis/index')} style={styles.navCard}>
+        <Card onPress={() => router.push('/analysis')} style={styles.navCard}>
           <Text style={styles.navTitle}>Wochenanalyse</Text>
           <Text style={styles.navSubtitle}>Volumen, PRs, Empfehlungen und Trainings-Heatmap</Text>
         </Card>

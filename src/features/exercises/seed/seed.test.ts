@@ -1,4 +1,7 @@
+import { eq } from 'drizzle-orm';
+
 import { exercises, templateExercises, workoutTemplates } from '@/db/schema';
+import { createId } from '@/lib/ids';
 import { createTestDb } from '@/test-utils/createTestDb';
 
 import { exerciseSeedData } from './exercises.seed';
@@ -42,16 +45,90 @@ describe('seedDatabase', () => {
     expect(seededExercises).toHaveLength(exerciseSeedData.length);
   });
 
-  it('does not reseed if a user already has (possibly modified) exercises', async () => {
+  it('adds newly-added seed exercises to an already-seeded (older) install', async () => {
     const db = createTestDb();
+    const now = new Date();
+
+    // Simuliert eine bestehende Installation mit einer älteren, kleineren
+    // Version der Übungsbibliothek (nur die ersten 5 Einträge).
+    const preExisting = exerciseSeedData.slice(0, 5);
+    const preExistingIds = new Map<string, string>();
+    for (const data of preExisting) {
+      const id = createId();
+      preExistingIds.set(data.name, id);
+      await db.insert(exercises).values({
+        id,
+        createdAt: now,
+        updatedAt: now,
+        deletedAt: null,
+        name: data.name,
+        muscleGroup: data.muscleGroup,
+        secondaryMuscles: null,
+        equipment: data.equipment,
+        description: data.description,
+        mediaUrl: null,
+        isCustom: false,
+      });
+    }
+
     await seedDatabase(db);
 
-    const before = await db.select().from(exercises);
+    const all = await db.select().from(exercises);
+    expect(all).toHaveLength(exerciseSeedData.length);
 
-    // Simuliert einen zweiten App-Start nach Nutzeränderungen.
+    // Bereits vorhandene Übungen behalten ihre ursprüngliche ID (kein Duplikat/Ersatz).
+    for (const [name, id] of preExistingIds) {
+      const match = all.find((e) => e.name === name);
+      expect(match?.id).toBe(id);
+    }
+  });
+
+  it('does not resurrect a user-archived (soft-deleted) standard exercise', async () => {
+    const db = createTestDb();
+    const now = new Date();
+    const target = exerciseSeedData[0];
+
+    await db.insert(exercises).values({
+      id: createId(),
+      createdAt: now,
+      updatedAt: now,
+      deletedAt: now, // vom Nutzer archiviert
+      name: target.name,
+      muscleGroup: target.muscleGroup,
+      secondaryMuscles: null,
+      equipment: target.equipment,
+      description: target.description,
+      mediaUrl: null,
+      isCustom: false,
+    });
+
     await seedDatabase(db);
 
-    const after = await db.select().from(exercises);
-    expect(after).toHaveLength(before.length);
+    const matches = await db.select().from(exercises).where(eq(exercises.name, target.name));
+    expect(matches).toHaveLength(1);
+    expect(matches[0].deletedAt).not.toBeNull();
+  });
+
+  it('does not reseed example templates if the user already has any template', async () => {
+    const db = createTestDb();
+    const now = new Date();
+    await db.insert(workoutTemplates).values({
+      id: createId(),
+      createdAt: now,
+      updatedAt: now,
+      deletedAt: null,
+      name: 'Mein eigener Plan',
+      note: null,
+      position: 0,
+    });
+
+    await seedDatabase(db);
+
+    const allTemplates = await db.select().from(workoutTemplates);
+    expect(allTemplates.map((t) => t.name)).toEqual(['Mein eigener Plan']);
+
+    // Übungen werden trotzdem ergänzt.
+    const allExercises = await db.select().from(exercises);
+    expect(allExercises).toHaveLength(exerciseSeedData.length);
   });
 });

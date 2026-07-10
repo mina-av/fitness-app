@@ -27,16 +27,14 @@ exaktes Performance-Budget dienen (CI-Timing ist variabel).
 `initDb()` oder `useMigrations()` eine verständliche Fehlermeldung statt
 eines Absturzes. Kein weiterer Code nötig, hier nur gegengecheckt.
 
-**Kuriosität bei expo-router Typed Routes**: `app/analysis/index.tsx`
-bekommt vom Typed-Routes-Generator (aus unbekanntem Grund, anders als z.B.
-`app/exercises/index.tsx` → `/exercises`) NUR den Pfad `/analysis/index`
-zugewiesen, nicht den kanonischen `/analysis`. Zur Laufzeit funktionieren
-beide identisch (bestätigt), nur der generierte Typ akzeptiert `/analysis`
-nicht als Literal. Deshalb verwendet `app/index.tsx` bewusst
-`router.push('/analysis/index')` statt `'/analysis'`. Falls das in einer
-späteren expo-router-Version behoben wird, kann das wieder vereinfacht
-werden. Außerdem: `.expo/types/router.d.ts` wird NUR von `expo start`
-generiert/aktualisiert, nicht von `expo export` — bei "Route ist kein
+**Kuriosität bei expo-router Typed Routes (flackernd, kein dauerhafter
+Bug)**: `.expo/types/router.d.ts` wird NUR von `expo start` generiert/
+aktualisiert, nicht von `expo export`. Je nachdem, wann/wie zuletzt
+regeneriert wurde, tauchte für `app/analysis/index.tsx` mal nur
+`/analysis/index` auf, mal korrekt das kanonische `/analysis` — nach einem
+frischen `expo start`-Lauf war stets `/analysis` da. War also kein fixer
+Generator-Bug, sondern ein Caching-/Timing-Artefakt. `app/index.tsx`
+verwendet daher wieder `router.push('/analysis')`. Bei "Route ist kein
 gültiger Href"-Typfehlern nach dem Anlegen einer neuen Route hilft ein
 kurzer `expo start`-Lauf (Datei wird beim Hochfahren geschrieben).
 

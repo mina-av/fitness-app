@@ -58,5 +58,31 @@ export const EQUIPMENT_OPTIONS: { value: string; label: string }[] = [
   { value: 'maschine', label: 'Maschine' },
   { value: 'kabelzug', label: 'Kabelzug' },
   { value: 'koerpergewicht', label: 'Körpergewicht' },
+  { value: 'widerstandsband', label: 'Widerstandsband' },
+  { value: 'kettlebell', label: 'Kettlebell' },
   { value: 'sonstiges', label: 'Sonstiges' },
 ];
+
+export type EquipmentContext = 'zuhause' | 'gym';
+
+export const EQUIPMENT_CONTEXTS: { value: EquipmentContext; label: string }[] = [
+  { value: 'zuhause', label: 'Zuhause' },
+  { value: 'gym', label: 'Gym' },
+];
+
+// Ohne eigenes DB-Feld hergeleitet aus dem Equipment — vermeidet eine
+// Schema-Änderung nur für diese Kategorisierung. "sonstiges"/kein Equipment
+// bleibt unklassifiziert (erscheint nur unter "Alle", nicht unter Zuhause/Gym).
+export const EQUIPMENT_CONTEXT_LISTS: Record<EquipmentContext, string[]> = {
+  zuhause: ['koerpergewicht', 'kurzhantel', 'widerstandsband', 'kettlebell'],
+  gym: ['langhantel', 'maschine', 'kabelzug'],
+};
+
+export function getEquipmentContext(
+  equipment: string | null | undefined,
+): EquipmentContext | undefined {
+  if (!equipment) return undefined;
+  if (EQUIPMENT_CONTEXT_LISTS.zuhause.includes(equipment)) return 'zuhause';
+  if (EQUIPMENT_CONTEXT_LISTS.gym.includes(equipment)) return 'gym';
+  return undefined;
+}
