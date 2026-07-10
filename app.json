@@ -1,16 +1,18 @@
 {
   "expo": {
-    "name": "sport-app",
-    "slug": "sport-app",
+    "name": "Fitness Progress",
+    "slug": "fitness-progress",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "sportapp",
+    "scheme": "fitnessprogress",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "com.minaav.fitnessprogress"
     },
     "android": {
+      "package": "com.minaav.fitnessprogress",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -39,6 +41,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "ed828bf0-5f71-4a8d-9a69-5f4e4a9c4a10"
+      }
     }
   }
 }

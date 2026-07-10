@@ -1,14 +1,17 @@
 {
-  "name": "sport-app",
+  "name": "fitness-progress",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "dependencies": {
     "drizzle-orm": "^0.45.2",
     "expo": "~57.0.4",
+    "expo-constants": "~57.0.3",
     "expo-crypto": "~57.0.0",
+    "expo-dev-client": "~57.0.5",
     "expo-file-system": "~57.0.0",
     "expo-font": "~57.0.0",
     "expo-linear-gradient": "~57.0.0",
+    "expo-linking": "~57.0.2",
     "expo-router": "~57.0.4",
     "expo-sharing": "~57.0.3",
     "expo-splash-screen": "~57.0.2",
@@ -54,5 +57,10 @@
     "check": "npm run typecheck && npm run lint",
     "test": "jest"
   },
-  "private": true
+  "private": true,
+  "expo": {
+    "install": {
+      "exclude": ["jest", "@types/jest"]
+    }
+  }
 }
